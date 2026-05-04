@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 [CustomEditor(typeof(LevelEditorManager))]
 public class LevelEdtor : Editor
@@ -26,26 +27,22 @@ public class LevelEdtor : Editor
         GUILayout.Space(15);
         EditorGUILayout.LabelField("BRUSHES", EditorStyles.boldLabel);
 
-        // Hàng 1
         GUILayout.BeginHorizontal();
         DrawBrushButton(manager, "Start Pos (-1)", -1);
         DrawBrushButton(manager, "Floor (1)", 1);
         DrawBrushButton(manager, "Wall (0)", 0);
         GUILayout.EndHorizontal();
 
-        // Hàng 2
         GUILayout.BeginHorizontal();
         DrawBrushButton(manager, "Top Left (2)", 2);
         DrawBrushButton(manager, "Top Right (3)", 3);
         GUILayout.EndHorizontal();
 
-        // Hàng 3
         GUILayout.BeginHorizontal();
         DrawBrushButton(manager, "Bot Left (4)", 4);
         DrawBrushButton(manager, "Bot Right (5)", 5);
         GUILayout.EndHorizontal();
 
-        // Hàng 4
         GUILayout.BeginHorizontal();
         DrawBrushButton(manager, "Bridge (6)", 6);
         DrawBrushButton(manager, "Win Pos (-2)", -2);
@@ -69,6 +66,7 @@ public class LevelEdtor : Editor
         if (GUILayout.Button("New blank map", GUILayout.Height(25))) manager.InitializeBlankMap();
         GUI.backgroundColor = Color.white;
 
+
         Repaint();
     }
     private void DrawBrushButton(LevelEditorManager manager, string label, int brushId)
@@ -82,4 +80,6 @@ public class LevelEdtor : Editor
         }
         GUI.backgroundColor = Color.white;
     }
+
+
 }

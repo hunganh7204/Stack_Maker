@@ -1,11 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.IO;
 
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
 
-    private string savePath;
 
     private void Awake()
     {
@@ -13,11 +12,6 @@ public class DataManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            savePath = Application.persistentDataPath + "/Levels/";
-            if (!Directory.Exists(savePath))
-            {
-                Directory.CreateDirectory(savePath);
-            }
         }
         else
         {
@@ -26,24 +20,37 @@ public class DataManager : MonoBehaviour
     }
     public void SaveLevel(LevelData levelData, string fileName)
     {
+        string folderPath = Application.dataPath + "/Resources/Level";
+
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+
+        if (!fileName.EndsWith(".json")) fileName += ".json";
+
+        string fullPath = Path.Combine(folderPath, fileName);
         string json = JsonUtility.ToJson(levelData, true);
 
-        string fullPath = savePath + fileName + ".json";
         File.WriteAllText(fullPath, json);
+
+        UnityEditor.AssetDatabase.Refresh();
     }
 
     public LevelData LoadLevel(string fileName)
     {
-        string fullPath = savePath + fileName + ".json";
+        string cleanName = fileName.Replace(".json", "");
+        string resourcePath = "Level/" + cleanName;
 
-        if (File.Exists(fullPath))
+        TextAsset resourceFile = Resources.Load<TextAsset>(resourcePath);
+
+        if (resourceFile != null)
         {
-            string json = File.ReadAllText(fullPath);
-            LevelData data = JsonUtility.FromJson<LevelData>(json);
-            return data;
+            return JsonUtility.FromJson<LevelData>(resourceFile.text);
         }
         else
         {
+            Debug.LogError("❌ Không tìm thấy map: " + fileName + " trong thư mục Resources/Level!");
             return null;
         }
     }
@@ -51,19 +58,18 @@ public class DataManager : MonoBehaviour
     public string GetNextLevelName()
     {
         int maxLevel = 0;
-        if (Directory.Exists(savePath))
+
+        TextAsset[] files = Resources.LoadAll<TextAsset>("Level");
+
+        foreach (TextAsset file in files)
         {
-            string[] files = Directory.GetFiles(savePath, "Level_*.json");
-            foreach (string file in files)
+            string[] parts = file.name.Split('_');
+            if (parts.Length > 1 && int.TryParse(parts[1], out int num))
             {
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                string[] parts = fileName.Split('_');
-                if (parts.Length > 1 && int.TryParse(parts[1], out int num))
-                {
-                    if (num > maxLevel) maxLevel = num;
-                }
+                if (num > maxLevel) maxLevel = num;
             }
         }
+
         return "Level_" + (maxLevel + 1);
     }
 }

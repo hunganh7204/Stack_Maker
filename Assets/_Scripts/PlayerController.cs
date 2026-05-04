@@ -156,17 +156,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //private void SnapToGrid()
-    //{
-    //    Vector3 rayOrigin = transform.position + Vector3.up * 1f;
-
-    //    if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, 3f, floorLayer))
-    //    {
-    //        Vector3 trueCenter = hit.collider.bounds.center;
-    //        transform.position = new Vector3(trueCenter.x, transform.position.y, trueCenter.z);
-    //    }
-    //}
-
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.layer == LayerMask.NameToLayer("Stack"))
@@ -215,7 +204,7 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("WInpos"))
         {
-            Transform standPoint = other.transform.Find("StandPos");
+            Transform standPoint = other.transform.parent.Find("StandPos");
             if (standPoint != null)
             {
                 transform.position = new Vector3(standPoint.position.x, transform.position.y, standPoint.position.z);

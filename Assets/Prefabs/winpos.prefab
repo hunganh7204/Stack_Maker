@@ -12630,12 +12630,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 4.24779, z: 1.1983945}
-  m_Center: {x: -0.000000023650477, y: 1.6238954, z: -0.0991973}
+  m_Size: {x: 1, y: 3.2477899, z: 5.198395}
+  m_Center: {x: 0, y: 1.1238954, z: 1.9008026}
 --- !u!1 &1948827096300772314
 GameObject:
   m_ObjectHideFlags: 0
@@ -13323,9 +13323,10 @@ GameObject:
   - component: {fileID: 9007298648996031894}
   - component: {fileID: 6182994002983831902}
   - component: {fileID: 1410890937216879916}
+  - component: {fileID: 2586875720314143576}
   m_Layer: 6
   m_Name: zhongdian
-  m_TagString: Untagged
+  m_TagString: WInpos
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13399,6 +13400,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2586875720314143576
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2399981190920090826}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.99999905, y: 1.0000014, z: 1.6000029}
+  m_Center: {x: 0.0000010728838, y: 0.0000002384186, z: 0.3}
 --- !u!1 &2422675834313650730
 GameObject:
   m_ObjectHideFlags: 0
@@ -16831,9 +16853,10 @@ GameObject:
   - component: {fileID: 3826108381757895407}
   - component: {fileID: 5092045246973750808}
   - component: {fileID: 2556021409685705956}
+  - component: {fileID: 774040169682946495}
   m_Layer: 6
   m_Name: qidian
-  m_TagString: Untagged
+  m_TagString: WInpos
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16906,6 +16929,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &774040169682946495
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3390049922707599095}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.0000002, z: 10.299991}
+  m_Center: {x: 0, y: -0.00000036835704, z: 5.150003}
 --- !u!1 &3439635097332162067
 GameObject:
   m_ObjectHideFlags: 0
