@@ -27,14 +27,16 @@ public class DataManager : MonoBehaviour
             Directory.CreateDirectory(folderPath);
         }
 
-        if (!fileName.EndsWith(".json")) fileName += ".json";
+        if (!fileName.ToLower().EndsWith(".json")) fileName += ".json";
 
         string fullPath = Path.Combine(folderPath, fileName);
         string json = JsonUtility.ToJson(levelData, true);
 
         File.WriteAllText(fullPath, json);
 
+#if UNITY_EDITOR
         UnityEditor.AssetDatabase.Refresh();
+#endif
     }
 
     public LevelData LoadLevel(string fileName)
@@ -50,7 +52,6 @@ public class DataManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("❌ Không tìm thấy map: " + fileName + " trong thư mục Resources/Level!");
             return null;
         }
     }

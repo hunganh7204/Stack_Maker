@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 
 public class PlayerController : MonoBehaviour
@@ -198,7 +199,7 @@ public class PlayerController : MonoBehaviour
             {
                 isMoving = false;
                 isGamePlaying = false;
-                Debug.Log("Game Over! You need a block to cross the bridge.");
+                Invoke(nameof(CallShowLoseUI), 0.01f);
             }
         }
 
@@ -208,6 +209,11 @@ public class PlayerController : MonoBehaviour
             if (standPoint != null)
             {
                 transform.position = new Vector3(standPoint.position.x, transform.position.y, standPoint.position.z);
+            }
+            ParticleSystem[] winEffects = other.transform.parent.GetComponentsInChildren<ParticleSystem>();
+            foreach (ParticleSystem effect in winEffects)
+            {
+                effect.Play(); 
             }
 
             if (stack != null)
@@ -223,9 +229,11 @@ public class PlayerController : MonoBehaviour
             isGamePlaying = false;
             targetPosition = transform.position;
             Debug.Log("Level Complete!");
-            Invoke(nameof(CallShowWinUI), 1.5f);
+            Invoke(nameof(CallShowWinUI), 1.0f);
         }
     }
+
+
     private void OnDestroy()
     {
         if (inputController != null)
@@ -238,4 +246,10 @@ public class PlayerController : MonoBehaviour
     {
         UIManager.Instance.ShowWinUI();
     }
+
+    private void CallShowLoseUI()
+    {
+        UIManager.Instance.ShowLoseUI();
+    }
+
 }
