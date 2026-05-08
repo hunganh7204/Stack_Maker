@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject settingPanel;
     [SerializeField] private GameObject losePanel;
+    [SerializeField] private GameObject loadingPanel;
 
     [Header("UI Texts")]
     [SerializeField] private TextMeshProUGUI levelText;
@@ -20,6 +22,10 @@ public class UIManager : MonoBehaviour
 
     [Header("HUD Elements")]
     [SerializeField] private GameObject settingButton;
+
+    [Header("Loading Settings")]
+    [SerializeField] private float minLoadingTime = 1.5f;
+    [SerializeField] private Image loadingProgressBar;
 
     private void Awake()
     {
@@ -49,6 +55,7 @@ public class UIManager : MonoBehaviour
     public void HideWinUI()
     {
         if (winPanel != null) winPanel.SetActive(false);
+        if (settingButton != null) settingButton.SetActive(true);
     }
 
 
@@ -141,6 +148,7 @@ public class UIManager : MonoBehaviour
      public void HideLoseUI()
     {
         if (losePanel != null) losePanel.SetActive(false);
+        if (settingButton != null) settingButton.SetActive(true);
     }
     public void OnClickLoseMenu()
     {
@@ -165,6 +173,40 @@ public class UIManager : MonoBehaviour
 
         cg.alpha = 1f;
         cg.interactable = true;
+    }
+
+    //LoadingUI
+    public void StartLoadingSequence()
+    {
+        if (loadingPanel != null) loadingPanel.SetActive(true);
+        if (menuPanel != null) menuPanel.SetActive(false);
+
+        StartCoroutine(LoadingRoutine());
+    }
+
+    private IEnumerator LoadingRoutine()
+    {
+        float elapsedTime = 0f;
+        if (loadingProgressBar != null)
+        {
+            loadingProgressBar.fillAmount = 0f;
+        }
+        while (elapsedTime < minLoadingTime)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / minLoadingTime);
+            if (loadingProgressBar != null)
+            {
+                loadingProgressBar.fillAmount = progress;
+            }
+            yield return null;
+        }
+        if (loadingProgressBar != null)
+        {
+            loadingProgressBar.fillAmount = 1f;
+        }
+        if (loadingPanel != null) loadingPanel.SetActive(false);
+        ShowMainMenu();
     }
 }
 
