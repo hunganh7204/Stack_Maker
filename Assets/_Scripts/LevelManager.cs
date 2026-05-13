@@ -33,8 +33,7 @@ public class LevelManager : MonoBehaviour
     public void LoadLevel(int level)
     {
         currentLevel = level;
-        PlayerPrefs.SetInt("SavedLevel", currentLevel);
-        PlayerPrefs.Save();
+        DataManager.Instance.SaveCurrentLevel(currentLevel);
         UIManager.Instance.UpdateLevelText(currentLevel);
         UIManager.Instance.HideWinUI();
         LevelData data = DataManager.Instance.LoadLevel("Level_" + level);

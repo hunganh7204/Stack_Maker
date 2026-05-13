@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]private InputController inputController;
     enum Direction { Forward, Back, Left, Right }
-    private Direction currentDirection;
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private LayerMask floorLayer;
     [SerializeField] private LayerMask wallLayer;
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float rotationSpeed = 20f; 
 
     private bool isGamePlaying = false;
+    private Dictionary<Collider, CornerBlock> cornerCache = new Dictionary<Collider, CornerBlock>();
+    private HashSet<GameObject> filledBridges = new HashSet<GameObject>();
 
 
     public void OnInit(Vector3 startPos)
@@ -41,6 +44,8 @@ public class PlayerController : MonoBehaviour
         targetPosition = transform.position;
 
         stack.ClearStack();
+        cornerCache.Clear();
+        filledBridges.Clear();
 
         if (animator != null)
         {
@@ -99,16 +104,14 @@ public class PlayerController : MonoBehaviour
 
     private void TryMove(Direction direction)
     {
-        Vector3 intendedMoveDirection = Vector3.zero;
-
-        switch (direction)
+        Vector3 intendedMoveDirection = direction switch
         {
-            case Direction.Forward: intendedMoveDirection = Vector3.forward; break;
-            case Direction.Back: intendedMoveDirection = Vector3.back; break;
-            case Direction.Left: intendedMoveDirection = Vector3.left; break;
-            case Direction.Right: intendedMoveDirection = Vector3.right; break;
-        }
-
+            Direction.Forward => Vector3.forward,
+            Direction.Back => Vector3.back,
+            Direction.Left => Vector3.left,
+            Direction.Right => Vector3.right,
+            _ => Vector3.zero
+        };
         CalculateDestination(intendedMoveDirection);
     }
 
@@ -120,8 +123,9 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 hitPos = hit.collider.bounds.center;
             Vector3 finalDest;
+            const string winTag = "WInpos";
 
-            if (hit.collider.CompareTag("WInpos"))
+            if (hit.collider.CompareTag(winTag))
             {
                 finalDest = new Vector3(hitPos.x, transform.position.y, hitPos.z);
             }
@@ -159,7 +163,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Stack"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Stack"))
         {
             stack.AddStack();
             other.gameObject.SetActive(false);
@@ -172,11 +176,19 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.CompareTag("Corner"))
         {
-            CornerBlock corner = other.GetComponent<CornerBlock>();
-            if(corner != null)
+            CornerBlock corner;
+            if (!cornerCache.TryGetValue(other, out corner))
+            {
+                corner = other.GetComponent<CornerBlock>();
+                if (corner != null)
+                {
+                    cornerCache.Add(other, corner);
+                }
+            }
+            if (corner != null)
             {
                 Vector3 newDir = corner.GetNewDirection(moveDirection);
-                if(newDir != Vector3.zero)
+                if (newDir != Vector3.zero)
                 {
                     Vector3 trueCenter = other.bounds.center;
                     Vector3 snapPos = transform.position;
@@ -184,36 +196,38 @@ public class PlayerController : MonoBehaviour
                     snapPos.z = trueCenter.z;
                     transform.position = snapPos;
                     CalculateDestination(newDir);
-                   
+
                 }
             }
         }
         if (other.gameObject.CompareTag("Bridge"))
         {
-            if (stack.GetStackCount() > 0)
+            if (!filledBridges.Contains(other.gameObject))
             {
-                stack.RemoveStack(other.bounds.center);
-                other.gameObject.tag = "Untagged";
-            }
-            else
-            {
-                isMoving = false;
-                isGamePlaying = false;
-                Invoke(nameof(CallShowLoseUI), 0.01f);
+                if (stack.GetStackCount() > 0)
+                {
+                    stack.RemoveStack(other.bounds.center);
+                    filledBridges.Add(other.gameObject);
+                }
+                else
+                {
+                    isMoving = false;
+                    isGamePlaying = false;
+                    Invoke(nameof(CallShowLoseUI), 0.01f);
+                }
             }
         }
 
         if (other.gameObject.CompareTag("WInpos"))
         {
-            Transform standPoint = other.transform.parent.Find("StandPos");
-            if (standPoint != null)
+            Winpos winPos = Winpos.Instance;
+            Debug.Log("Player reached win position");
+            if (winPos != null)
             {
-                transform.position = new Vector3(standPoint.position.x, transform.position.y, standPoint.position.z);
-            }
-            ParticleSystem[] winEffects = other.transform.parent.GetComponentsInChildren<ParticleSystem>();
-            foreach (ParticleSystem effect in winEffects)
-            {
-                effect.Play(); 
+                Vector3 standPos = winPos.GetStandPosition();
+                transform.position = new Vector3(standPos.x, transform.position.y, standPos.z);
+
+                winPos.PlayWinEffects();
             }
 
             if (stack != null)

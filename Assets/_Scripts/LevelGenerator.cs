@@ -2,6 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TileType
+{
+    Start = -1,
+    End = -2,
+    Wall = 0,
+    Floor = 1,
+    TopLeft = 2,
+    TopRight = 3,
+    BottomLeft = 4,
+    BottomRight = 5,
+    Bridge = 6,
+    Empty = 99
+}
+
 public class LevelGenerator : MonoBehaviour
 {
     [Header("Prefabs")]
@@ -23,8 +37,8 @@ public class LevelGenerator : MonoBehaviour
 
     [SerializeField] private float bridgeYOffset = 0.5f;
 
-    private Dictionary<int, Queue<GameObject>> poolDictionary = new Dictionary<int, Queue<GameObject>>();
-    private Dictionary<GameObject, int> activeTiles = new Dictionary<GameObject, int>();
+    private Dictionary<TileType, Queue<GameObject>> poolDictionary = new Dictionary<TileType, Queue<GameObject>>();
+    private Dictionary<GameObject, TileType> activeTiles = new Dictionary<GameObject, TileType>();
 
     private Vector3 startPosition;
     private bool hasStartPos = false;
@@ -57,56 +71,56 @@ public class LevelGenerator : MonoBehaviour
             for(int x=0; x<row.columns.Count; x++)
             {
                 TileData tileNode = row.columns[x];
-                int tileType = tileNode.id;
+                TileType currentType = (TileType)tileNode.id;
 
-                if (tileType == 99) continue;
+                if (currentType == TileType.Empty) continue;
 
                 float yPos = 0f;
-                if (tileType == 6) yPos = bridgeYOffset;
+                if (currentType == TileType.Bridge) yPos = bridgeYOffset;
 
                 Vector3 spawnPos = new Vector3(x * tileSize, yPos, (lengthZ - z - 1) * tileSize);
                 GameObject prefabToUse = null;
 
-                if (tileType == -1)
+                if (currentType == TileType.Start)
                 {
                     startPosition = spawnPos;
                     hasStartPos = true;
                 }
 
-                switch (tileType)
+                switch (currentType)
                 {
-                    case 0:
+                    case TileType.Wall:
                         prefabToUse = wallPrefab;
                         break;
-                    case 1:
+                    case TileType.Floor:
                         prefabToUse = floorPrefab;
                         break;
-                    case 2:
+                    case TileType.TopLeft:
                         prefabToUse = topLeftCornerPrefab;
                         break;
-                    case 3:
+                    case TileType.TopRight:
                         prefabToUse = topRightCornerPrefab;
                         break;
-                    case 4:
+                    case TileType.BottomLeft:
                         prefabToUse = bottomLeftCornerPrefab;
                         break;
-                    case 5:
+                    case TileType.BottomRight:
                         prefabToUse = bottomRightCornerPrefab;
                         break;
-                    case 6:
+                    case TileType.Bridge:
                         prefabToUse = bridgePrefab;
                         break;
-                    case -1:
+                    case TileType.Start:
                         prefabToUse = startPrefab;
                         break;
-                    case -2:
+                    case TileType.End:
                         prefabToUse = endPrefab;
                         break;
                 }
                 if (prefabToUse != null)
                 {
-                    GameObject spawnedTile = GetFromPool(tileType, prefabToUse, spawnPos);
-                    if (tileType == 6 || tileType == -2)
+                    GameObject spawnedTile = GetFromPool(currentType, prefabToUse, spawnPos);
+                    if (currentType == TileType.Bridge || currentType == TileType.End)
                     {
                         //spawnedTile.transform.rotation = prefabToUse.transform.rotation * Quaternion.Euler(0, tileNode.rotY, 0); -> xoay theo truc cua prefab
                         spawnedTile.transform.rotation = Quaternion.Euler(0, tileNode.rotY, 0) * prefabToUse.transform.rotation; //xoay theo truc world
@@ -117,7 +131,7 @@ public class LevelGenerator : MonoBehaviour
 
     }
 
-    private GameObject GetFromPool(int tileType, GameObject prefab, Vector3 position)
+    private GameObject GetFromPool(TileType tileType, GameObject prefab, Vector3 position)
     {
         if(!poolDictionary.ContainsKey(tileType))
         {
@@ -153,7 +167,7 @@ public class LevelGenerator : MonoBehaviour
         foreach (var kvp in activeTiles)
         {
             GameObject obj = kvp.Key;
-            int type = kvp.Value;
+            TileType type = kvp.Value;
 
             if(obj != null)
             {

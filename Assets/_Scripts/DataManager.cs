@@ -1,9 +1,19 @@
 ﻿using UnityEngine;
 using System.IO;
 
+[System.Serializable]
+public class GameData
+{
+    public int savedLevel = 1;
+}
+
 public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
+
+    public GameData gameData;
+
+    const string GameDataKey = "GameData";
 
 
     private void Awake()
@@ -12,12 +22,40 @@ public class DataManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            LoadGameData();
         }
         else
         {
             Destroy(gameObject);
         }
     }
+
+    public void LoadGameData()
+    {
+        if (PlayerPrefs.HasKey(GameDataKey))
+        {
+            string json = PlayerPrefs.GetString(GameDataKey);
+            gameData = JsonUtility.FromJson<GameData>(json);
+        }
+        else
+        {
+            gameData = new GameData();
+        }
+    }
+
+    public void SaveGameData()
+    {
+        string json = JsonUtility.ToJson(gameData);
+        PlayerPrefs.SetString(GameDataKey, json);
+        PlayerPrefs.Save();
+    }
+
+    public void SaveCurrentLevel (int level)
+    {
+        gameData.savedLevel = level;
+        SaveGameData();
+    }
+
     public void SaveLevel(LevelData levelData, string fileName)
     {
         string folderPath = Application.dataPath + "/Resources/Level";

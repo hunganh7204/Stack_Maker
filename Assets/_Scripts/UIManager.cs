@@ -94,15 +94,14 @@ public class UIManager : MonoBehaviour
 
     public void OnClickNewGame()
     {
-        PlayerPrefs.SetInt("SavedLevel", 1);
-        PlayerPrefs.Save();
+        DataManager.Instance.SaveCurrentLevel(1);
 
         HideMainMenu();
         LevelManager.Instance.LoadLevel(1);
     }
     public void OnClickContinue()
     {
-        int savedLevel = PlayerPrefs.GetInt("SavedLevel", 1);
+        int savedLevel = DataManager.Instance.gameData.savedLevel;
         HideMainMenu();
         LevelManager.Instance.LoadLevel(savedLevel);
     }

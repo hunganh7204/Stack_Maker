@@ -12525,6 +12525,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7075310050225022900}
   - component: {fileID: 3204892205765356732}
+  - component: {fileID: 7948397030448931946}
   m_Layer: 6
   m_Name: winpos
   m_TagString: WInpos
@@ -12636,6 +12637,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 3.2477899, z: 5.198395}
   m_Center: {x: 0, y: 1.1238954, z: 1.9008026}
+--- !u!114 &7948397030448931946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812631093160058100}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d1dff320455d14c87edbb36d9a9a31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  standPos: {fileID: 8541744243990699373}
+  winEffects:
+  - {fileID: 1842313061015220504}
+  - {fileID: 1262302306035243652}
 --- !u!1 &1948827096300772314
 GameObject:
   m_ObjectHideFlags: 0
@@ -13324,6 +13341,7 @@ GameObject:
   - component: {fileID: 6182994002983831902}
   - component: {fileID: 1410890937216879916}
   - component: {fileID: 2586875720314143576}
+  - component: {fileID: 625316444236881774}
   m_Layer: 6
   m_Name: zhongdian
   m_TagString: WInpos
@@ -13421,6 +13439,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.99999905, y: 1.0000014, z: 1.6000029}
   m_Center: {x: 0.0000010728838, y: 0.0000002384186, z: 0.3}
+--- !u!114 &625316444236881774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2399981190920090826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25d1dff320455d14c87edbb36d9a9a31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  standPos: {fileID: 8541744243990699373}
+  winEffects:
+  - {fileID: 1842313061015220504}
+  - {fileID: 1262302306035243652}
 --- !u!1 &2422675834313650730
 GameObject:
   m_ObjectHideFlags: 0
